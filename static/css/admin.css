@@ -1,0 +1,190 @@
+* {
+  color: white;
+  scroll-behavior: smooth;
+}
+
+.navbar {
+  width: 70%;
+}
+
+.icon .metric-link {
+  border: 1px solid white;
+}
+
+a {
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.contentContainer {
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.admin-content {
+  width: 50%;
+}
+
+.admin-content h1 {
+  padding-top: 50px;
+  padding-bottom: 35px;
+  font-weight: 200;
+  text-align: center;
+}
+
+.metrics {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+  margin-top: 20px;
+}
+
+.metricHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  padding-top: 10px;
+  border-bottom: 1px solid rgb(178, 178, 178);
+}
+
+.metricHeader span {
+  position: relative;
+  top: 8px;
+}
+
+.metric {
+  padding: 30px;
+  border: 1px solid rgb(108, 108, 108);
+  border-radius: 20px;
+  background-color: #79797939;
+  text-align: left;
+  width: 100%;
+  transition: 0.25s ease;
+}
+
+.searchHeader {
+  padding-top: 35px;
+  padding-bottom: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.metric:last-child {
+  margin-bottom: 100px;
+}
+
+.metric h2 {
+  margin-bottom: 10px;
+  font-size: 1.3em;
+  font-weight: 300;
+}
+
+.metric p {
+  font-size: 1.5em;
+  font-weight: 400;
+}
+
+.metrics-table {
+  width: 100%;
+  margin-top: 30px;
+  border-collapse: collapse;
+  display: none;
+}
+
+.metrics-table th,
+.metrics-table td {
+  border: 1px solid #8d8d8d;
+  padding: 8px;
+}
+
+.metrics-table tr:nth-child(odd) {
+  background-color: #333333c7;
+}
+
+.metrics-table tr:nth-child(even) {
+  background-color: #444444ba;
+}
+
+.metrics-table th {
+  background-color: #1c1c1cbf;
+  text-align: left;
+  font-weight: 300;
+  padding: 20px;
+}
+
+input {
+  background-color: transparent;
+  outline: none;
+  padding: 10px;
+  border-radius: 10px;
+  width: 500px;
+  border: 1px solid rgb(108, 108, 108);
+  margin: 0px 10px;
+  transition: 0.25s ease;
+}
+
+select {
+  padding: 10px 40px 10px 10px;
+  border-radius: 10px;
+  border: 1px solid rgb(108, 108, 108);
+  background-color: transparent;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="white" stroke-width="2" d="M2 6l10 10L22 6"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  transition: 0.25s ease;
+}
+
+button {
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 1px solid rgb(108, 108, 108);
+  background-color: transparent;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+input:hover,
+select:hover,
+button:hover,
+.metric:hover {
+  border: 1px solid white;
+}
+
+input:focus,
+select:focus,
+button:focus {
+  border: 1px solid white;
+  background-color: rgb(58, 58, 58);
+}
+
+.metric-link:nth-child(1):hover {
+  border-color: #ffffff;
+  background-color: rgba(0, 255, 8, 0.089);
+}
+
+.metric-link:nth-child(2):hover {
+  border-color: #ffffff;
+  background-color: rgba(208, 255, 0, 0.089);
+}
+
+.metric-link:nth-child(3):hover {
+  border-color: #ffffff;
+  background-color: rgba(0, 187, 255, 0.089);
+}
+
+.metric-link:nth-child(4):hover {
+  border-color: #ffffff;
+  background-color: rgba(255, 0, 230, 0.089);
+}

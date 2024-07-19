@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="static/css/cart.css" />
+    <link rel="stylesheet" href="static/css/icons.css" />
+    <link rel="stylesheet" href="static/css/login.css" />
+    <link rel="stylesheet" href="static/css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins"
+      rel="stylesheet"
+    />
+    <title>Create Account | Saeed Book Bank</title>
+  </head>
+  <body>
+    <button class="goBackButton" onclick="goBack()"><</button>
+    <div class="loginContainer">
+      <div class="credentials">
+        <h1>Create Account</h1>
+        <form action="/register" method="post">
+          <div class="inputGroup">
+            <input
+              type="text"
+              id="first_name"
+              name="first_name"
+              placeholder="First Name"
+              required
+            />
+          </div>
+          <div class="inputGroup">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Email"
+              required
+            />
+          </div>
+          <div class="inputGroup">
+            <input
+              type="text"
+              id="address"
+              name="address"
+              placeholder="Address"
+              required
+            />
+          </div>
+          <div class="inputGroup">
+            <input
+              type="text"
+              id="city"
+              name="city"
+              placeholder="City"
+              required
+            />
+          </div>
+          <div class="inputGroup">
+            <input
+              type="text"
+              id="country"
+              name="country"
+              placeholder="Country"
+              required
+            />
+          </div>
+          <div class="inputGroup">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Password"
+              required
+            />
+          </div>
+          <div class="inputGroup">
+            <input
+              type="password"
+              id="pin"
+              name="pin"
+              placeholder="3-Digit PIN"
+              pattern="\d{3}"
+              required
+            />
+          </div>
+          {% if error %}
+          <div class="errorMessage">{{ error }}</div>
+          {% endif %}
+          <div class="buttonGroup">
+            <button type="submit">Create Account</button>
+          </div>
+        </form>
+      </div>
+      <div class="imageContainer">
+        <img
+          src="https://res.cloudinary.com/dw095oyal/image/upload/v1715786947/saeedbookbank_is868p.jpg"
+          alt="library"
+        />
+      </div>
+    </div>
+
+    <script>
+      function goBack() {
+        window.history.back();
+      }
+    </script>
+  </body>
+</html>

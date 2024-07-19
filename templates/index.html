@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="static/css/cart.css" />
+    <link rel="stylesheet" href="static/css/icons.css" />
+    <link rel="stylesheet" href="static/css/login.css" />
+    <link rel="stylesheet" href="static/css/style.css" />
+    <link rel="stylesheet" href="static/css/orders.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.2/lib/vanilla-tilt.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
+
+    <title>Saeed Book Bank</title>
+  </head>
+  <body>
+    <div class="navContainer">
+      <div class="navCartContainer">
+        <div class="navbar">
+          <div class="logo" id="logo">Saeed Book Bank</div>
+          <div class="nav-icons">
+            <div class="search" id="searchBtn">
+              <span class="mingcute--search-line"></span>
+              <input
+                type="text"
+                class="search-input"
+                id="searchInput"
+                placeholder="Search by Title or Author"
+              />
+              <button class="search-submit-btn" id="searchSubmitBtn">
+                <span class="fluent--arrow-right-12-filled"></span>
+              </button>
+            </div>
+            <div class="icon cart" id="cartBtn">
+              <span class="ph--shopping-cart"></span>
+              <span class="cart-counter" id="cartCounter"
+                >{{ cart_items_count }}</span
+              >
+            </div>
+            <div class="icon orders" id="ordersBtn">
+              <span class="iconamoon--shopping-bag-light"></span>
+              <span class="orders-counter" id="ordersCounter"></span>
+            </div>
+            <div class="icon user">
+              {% if first_name %}
+              <a href="{{ url_for('logout') }}" class="icon-link">
+                <span class="carbon--user-avatar"></span>
+                <span id="username">{{ first_name }}</span>
+              </a>
+              {% else %}
+              <a href="{{ url_for('login') }}" class="icon-link">
+                <span class="carbon--user-avatar"></span>
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="cart-dropdown" id="cartDropdown">
+          <div class="cart-header">
+            <h1>Your Cart</h1>
+            <button class="clear-cart-btn" id="clearCartBtn">
+              <span class="carbon--shopping-cart-clear"></span>Clear
+            </button>
+          </div>
+          <div class="cart-items" id="cartItems">
+            <p>No items in your cart.</p>
+          </div>
+          <div class="cart-header" id="cartTotal">
+            <h3>Rs. <span id="totalPrice">0</span></h3>
+            <button class="checkout-cart-btn" id="checkoutCartBtn">
+              <span
+                class="material-symbols-light--shopping-cart-checkout-sharp"
+              ></span
+              >Checkout
+            </button>
+          </div>
+        </div>
+
+        <div class="orders-dropdown" id="ordersDropdown">
+          <div class="orders-header">
+            <h1>Your Orders</h1>
+          </div>
+          <div class="orders-items" id="ordersItems">
+            <p>No orders found.</p>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="nav-btn">Fiction</button>
+          <button class="nav-btn">History</button>
+          <button class="nav-btn">Horror</button>
+          <button class="nav-btn">Mystery & Thrillers</button>
+          {% if is_admin %}
+          <button class="nav-btn" onclick="window.location.href='/admin_panel'">
+            Dashboard
+          </button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="categories-container" id="searchResults" style="display: none">
+      <div class="category">
+        <h2>Search Results for <span id="searchTermDisplay"></span></h2>
+        <div class="product-container" id="searchResultsContainer"></div>
+      </div>
+    </div>
+
+    <div class="categories-container" id="categoriesContainer">
+      {% for category in categories %}
+      <div
+        class="category"
+        id="{{ category.CategoryName | lower | replace(' ', '_') | replace('&', 'and') }}"
+      >
+        <h2>{{ category.CategoryName }}</h2>
+        <div class="product-container">
+          {% for book in books %} {% if book.CategoryID == category.CategoryID
+          %}
+          <div
+            class="product-card"
+            data-id="{{ book.BookID }}"
+            data-title="{{ book.Title }}"
+            data-author="{{ book.AuthorName }}"
+            data-price="{{ book.Price }}"
+            data-description="{{ book.Description }}"
+            data-isbn="{{ book.ISBN }}"
+            data-stock="{{ book.Stock }}"
+          >
+            <img
+              src="{{ url_for('static', filename=book.image_path) }}"
+              alt="Book Image"
+            />
+            <h3>{{ book.Title }}</h3>
+            <h4>{{ book.AuthorName }}</h4>
+            <button
+              class="add-to-cart"
+              data-price="Rs. {{ book.Price }}"
+            ></button>
+          </div>
+
+          {% endif %} {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div id="bookModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal-left">
+          <img id="modalBookImage" src="" alt="Book Image" />
+          <h2 id="modalBookTitle"></h2>
+          <h3 id="modalBookAuthor"></h3>
+        </div>
+        <div class="modal-right">
+          <h3>Description</h3>
+          <p id="modalBookDescription"></p>
+          <h3>ISBN</h3>
+          <p id="modalBookISBN"></p>
+          <h3>Price</h3>
+          <p id="modalBookPrice"></p>
+          <h3>Stock Left</h3>
+          <p id="modalBookStock"></p>
+        </div>
+        <button id="modalAddToCart" class="add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+
+    <div id="receiptModal" class="receiptModal">
+      <div class="receiptLogo">Saeed Book Bank</div>
+      <div class="receipt-modal-content">
+        <span class="close-receipt">&times;</span>
+        <div id="receiptContent"></div>
+        <div
+          id="tickAnimation"
+          style="display: none; text-align: center; margin-top: 20px"
+        >
+          <i
+            class="fas fa-check-circle"
+            style="font-size: 50px; color: green"
+          ></i>
+        </div>
+      </div>
+    </div>
+
+    <div id="notification" class="notification">Item added to cart!</div>
+
+    <button id="scrollToTopBtn">
+      <span class="solar--alt-arrow-up-outline"></span>
+    </button>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const colorThief = new ColorThief();
+
+        const productCards = document.querySelectorAll(".product-card");
+        productCards.forEach((card) => {
+          const img = card.querySelector("img");
+
+          img.onload = function () {
+            const palette = colorThief.getPalette(img, 5);
+            const gradient = createGradient(palette);
+
+            card.style.backgroundImage = gradient;
+            card.style.backdropFilter = "blur(10px)";
+            card.style.webkitBackdropFilter = "blur(10px)";
+          };
+
+          // Ensure the image is loaded (if cached)
+          if (img.complete) {
+            img.onload();
+          }
+        });
+
+        function createGradient(palette) {
+          const colors = palette.map(
+            (color) => `rgb(${color[0]}, ${color[1]}, ${color[2]})`
+          );
+          return `linear-gradient(135deg, ${colors.join(", ")})`;
+        }
+      });
+
+      let scrollPosition = 0;
+
+      document.querySelectorAll(".product-card").forEach((card) => {
+        card.addEventListener("click", function () {
+          scrollPosition = window.pageYOffset;
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          document.getElementById("bookModal").style.display = "block";
+        });
+      });
+
+      document.querySelector(".close").addEventListener("click", function () {
+        document.getElementById("bookModal").style.display = "none";
+        window.scrollTo({ top: scrollPosition, behavior: "smooth" });
+      });
+
+      window.onclick = function (event) {
+        if (event.target == document.getElementById("bookModal")) {
+          document.getElementById("bookModal").style.display = "none";
+          window.scrollTo({ top: scrollPosition, behavior: "smooth" });
+        }
+      };
+
+      // Close modal when 'Add to Cart' button is clicked
+      document
+        .getElementById("modalAddToCart")
+        .addEventListener("click", function () {
+          document.getElementById("bookModal").style.display = "none";
+          window.scrollTo({ top: scrollPosition, behavior: "smooth" });
+        });
+
+      // Scroll to top button script
+      const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+      window.onscroll = function () {
+        scrollFunction();
+      };
+
+      function scrollFunction() {
+        console.log(
+          "Scroll Distance: ",
+          document.documentElement.scrollTop || document.body.scrollTop
+        );
+        if (
+          document.body.scrollTop > 500 ||
+          document.documentElement.scrollTop > 500
+        ) {
+          scrollToTopBtn.style.display = "block";
+        } else {
+          scrollToTopBtn.style.display = "none";
+        }
+      }
+
+      scrollToTopBtn.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      // For initial load if already scrolled
+      scrollFunction();
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Function to handle scrolling to a category
+        function scrollToCategory(categoryId) {
+          const categoryElement = document.getElementById(categoryId);
+          if (categoryElement) {
+            window.scrollTo({
+              top: categoryElement.offsetTop - 100,
+              behavior: "smooth",
+            });
+          }
+        }
+
+        // Add event listeners to navigation buttons
+        document.querySelectorAll(".nav-btn").forEach((button) => {
+          button.addEventListener("click", () => {
+            const categoryName = button.textContent
+              .trim()
+              .toLowerCase()
+              .replace(/ /g, "_")
+              .replace(/&/g, "and");
+            scrollToCategory(categoryName);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

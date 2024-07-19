@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/icons.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/admin.css') }}"
+    />
+    <title>Admin Panel</title>
+  </head>
+  <body>
+    <div class="navContainer">
+      <div class="navbar">
+        <div class="logo" id="logo">Saeed Book Bank | Dashboard</div>
+        <div class="nav-icons">
+          <div class="icon metric-link">
+            <a
+              href="#registered-users"
+              class="icon-link"
+              onclick="scrollToSection('registered-users')"
+            >
+              <span class="ph--users-duotone"></span> Users
+            </a>
+          </div>
+          <div class="icon metric-link">
+            <a
+              href="#orders-placed"
+              class="icon-link"
+              onclick="scrollToSection('orders-placed')"
+            >
+              <span class="icon-park-twotone--transaction-order"></span> Orders
+            </a>
+          </div>
+          <div class="icon metric-link">
+            <a
+              href="#sales-revenue"
+              class="icon-link"
+              onclick="scrollToSection('sales-revenue')"
+            >
+              <span class="icon-park-twotone--buy"></span> Sales
+            </a>
+          </div>
+          <div class="icon metric-link">
+            <a
+              href="#books-inventory"
+              class="icon-link"
+              onclick="scrollToSection('books-inventory')"
+            >
+              <span class="icon-park-twotone--bookshelf"></span> Books
+            </a>
+          </div>
+          <div class="icon user">
+            <a href="{{ url_for('home') }}" class="icon-link">
+              <span class="carbon--home"></span> Home
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contentContainer">
+      <div class="admin-content">
+        <h1>Analytics at a glance</h1>
+        <div class="metrics">
+          <div class="metric" id="registered-users">
+            <div class="metricHeader">
+              <h2><span class="ph--users-duotone"></span>Registered Users</h2>
+              <p>{{ metrics.total_users }}</p>
+            </div>
+            <canvas id="usersRegisteredByDayChart"></canvas>
+            <div class="searchHeader">
+              <select
+                id="usersSearchColumn"
+                onchange="changeColumnColor('usersTable', 'usersSearchColumn')"
+              >
+                <option value="0">UserID</option>
+                <option value="1">FirstName</option>
+                <option value="2">Email</option>
+                <option value="3">CreatedAt</option>
+              </select>
+              <input
+                type="text"
+                id="usersSearch"
+                placeholder="Search Users"
+                onkeyup="searchTable('usersSearch', 'usersTable', 'usersSearchColumn')"
+              />
+              <button onclick="toggleTable('usersTable')">Expand</button>
+            </div>
+            <table id="usersTable" class="metrics-table" style="display: none">
+              <thead>
+                <tr>
+                  <th>UserID</th>
+                  <th>FirstName</th>
+                  <th>Email</th>
+                  <th>Created At</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %}
+                <tr>
+                  <td>{{ user.UserID }}</td>
+                  <td>{{ user.FirstName }}</td>
+                  <td>{{ user.Email }}</td>
+                  <td>{{ user.CreatedAt }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="metric" id="orders-placed">
+            <div class="metricHeader">
+              <h2>
+                <span class="icon-park-twotone--transaction-order"></span>Orders
+                Placed
+              </h2>
+              <p>{{ metrics.total_orders }}</p>
+            </div>
+            <canvas id="ordersPlacedByDayChart"></canvas>
+            <div class="searchHeader">
+              <select
+                id="ordersSearchColumn"
+                onchange="changeColumnColor('ordersTable', 'ordersSearchColumn')"
+              >
+                <option value="0">OrderID</option>
+                <option value="1">UserID</option>
+                <option value="2">Total</option>
+                <option value="3">OrderDate</option>
+              </select>
+              <input
+                type="text"
+                id="ordersSearch"
+                placeholder="Search Orders"
+                onkeyup="searchTable('ordersSearch', 'ordersTable', 'ordersSearchColumn')"
+              />
+              <button onclick="toggleTable('ordersTable')">Expand</button>
+            </div>
+            <table id="ordersTable" class="metrics-table" style="display: none">
+              <thead>
+                <tr>
+                  <th>OrderID</th>
+                  <th>UserID</th>
+                  <th>Total</th>
+                  <th>Order Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in orders %}
+                <tr>
+                  <td>{{ order.OrderID }}</td>
+                  <td>{{ order.UserID }}</td>
+                  <td>Rs. {{ order.Total }}</td>
+                  <td>{{ order.OrderDate }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="metric" id="sales-revenue">
+            <div class="metricHeader">
+              <h2><span class="icon-park-twotone--buy"></span>Sales Revenue</h2>
+              <p>Rs. {{ metrics.total_sales }}</p>
+            </div>
+            <canvas id="salesByDayChart"></canvas>
+            <div class="searchHeader">
+              <select
+                id="salesSearchColumn"
+                onchange="changeColumnColor('salesTable', 'salesSearchColumn')"
+              >
+                <option value="0">OrderID</option>
+                <option value="1">UserID</option>
+                <option value="2">Total</option>
+                <option value="3">OrderDate</option>
+              </select>
+              <input
+                type="text"
+                id="salesSearch"
+                placeholder="Search Sales"
+                onkeyup="searchTable('salesSearch', 'salesTable', 'salesSearchColumn')"
+              />
+              <button onclick="toggleTable('salesTable')">Expand</button>
+            </div>
+            <table id="salesTable" class="metrics-table" style="display: none">
+              <thead>
+                <tr>
+                  <th>OrderID</th>
+                  <th>UserID</th>
+                  <th>Total</th>
+                  <th>Order Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in orders %}
+                <tr>
+                  <td>{{ order.OrderID }}</td>
+                  <td>{{ order.UserID }}</td>
+                  <td>Rs. {{ order.Total }}</td>
+                  <td>{{ order.OrderDate }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="metric" id="books-inventory">
+            <div class="metricHeader">
+              <h2>
+                <span class="icon-park-twotone--bookshelf"></span>Books
+                Inventory
+              </h2>
+              <p>{{ metrics.total_books }}</p>
+            </div>
+            <canvas id="booksByCategoryChart"></canvas>
+            <div class="searchHeader">
+              <select
+                id="booksSearchColumn"
+                onchange="changeColumnColor('booksTable', 'booksSearchColumn')"
+              >
+                <option value="0">BookID</option>
+                <option value="1">Title</option>
+                <option value="2">Stock</option>
+              </select>
+              <input
+                type="text"
+                id="booksSearch"
+                placeholder="Search Books"
+                onkeyup="searchTable('booksSearch', 'booksTable', 'booksSearchColumn')"
+              />
+              <button onclick="toggleTable('booksTable')">Expand</button>
+            </div>
+            <table id="booksTable" class="metrics-table" style="display: none">
+              <thead>
+                <tr>
+                  <th>BookID</th>
+                  <th>Title</th>
+                  <th>Stock</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for book in books %}
+                <tr>
+                  <td>{{ book.BookID }}</td>
+                  <td>{{ book.Title }}</td>
+                  <td>{{ book.Stock }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      function changeColumnColor(tableId, selectId) {
+        const table = document.getElementById(tableId);
+        const select = document.getElementById(selectId);
+        const selectedIndex = select.value;
+
+        // Reset column colors
+        const rows = table.getElementsByTagName("tr");
+        for (let i = 0; i < rows.length; i++) {
+          const cells = rows[i].getElementsByTagName("td");
+          for (let j = 0; j < cells.length; j++) {
+            cells[j].style.backgroundColor = "";
+          }
+        }
+
+        // Apply new color to the selected column
+        for (let i = 0; i < rows.length; i++) {
+          const cells = rows[i].getElementsByTagName("td");
+          if (cells[selectedIndex]) {
+            cells[selectedIndex].style.backgroundColor = "#1c1c1cbf";
+          }
+        }
+      }
+
+      function createSalesByDayChart(data) {
+        const ctx = document.getElementById("salesByDayChart").getContext("2d");
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: data.labels,
+            datasets: [
+              {
+                label: "Sales by Day",
+                data: data.sales,
+                backgroundColor: "rgba(64, 224, 208, 0.2)",
+                borderColor: "rgba(64, 224, 208, 1)",
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              x: {
+                ticks: {
+                  color: "rgba(64, 224, 208, 0.8)",
+                },
+                grid: {
+                  color: "rgba(169, 169, 169, 0.3)",
+                },
+              },
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  color: "rgba(64, 224, 208, 0.8)",
+                },
+                grid: {
+                  color: "rgba(169, 169, 169, 0.3)",
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // Function to create the users registered by day chart
+      function createUsersRegisteredByDayChart(data) {
+        const ctx = document
+          .getElementById("usersRegisteredByDayChart")
+          .getContext("2d");
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: data.labels,
+            datasets: [
+              {
+                label: "Users Registered by Day",
+                data: data.users,
+                backgroundColor: "rgba(75, 192, 75, 0.2)",
+                borderColor: "rgba(75, 192, 75, 1)",
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              x: {
+                ticks: {
+                  color: "rgba(75, 192, 75, 0.8)",
+                },
+                grid: {
+                  color: "rgba(169, 169, 169, 0.3)",
+                },
+              },
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  color: "rgba(75, 192, 75, 0.8)",
+                },
+                grid: {
+                  color: "rgba(169, 169, 169, 0.3)",
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // Function to create the orders placed by day chart
+      function createOrdersPlacedByDayChart(data) {
+        const ctx = document
+          .getElementById("ordersPlacedByDayChart")
+          .getContext("2d");
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: data.labels,
+            datasets: [
+              {
+                label: "Orders Placed by Day",
+                data: data.orders,
+                backgroundColor: "rgba(212, 212, 102, 0.2)",
+                borderColor: "rgba(212, 212, 102, 1)",
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              x: {
+                ticks: {
+                  color: "rgba(212, 212, 102, 0.8)",
+                },
+                grid: {
+                  color: "rgba(169, 169, 169, 0.3)",
+                },
+              },
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  color: "rgba(212, 212, 102, 0.8)",
+                },
+                grid: {
+                  color: "rgba(169, 169, 169, 0.3)",
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // Function to create the books by category chart
+      function createBooksByCategoryChart(data) {
+        const ctx = document
+          .getElementById("booksByCategoryChart")
+          .getContext("2d");
+
+        // Define an array of light colors for the categories
+        const backgroundColors = [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+          "rgba(75, 192, 192, 0.2)",
+          "rgba(153, 102, 255, 0.2)",
+          "rgba(255, 159, 64, 0.2)",
+          "rgba(199, 199, 199, 0.2)",
+        ];
+
+        const borderColors = [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+          "rgba(199, 199, 199, 1)",
+        ];
+
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: data.labels, // Array of category names
+            datasets: [
+              {
+                label: "Books by Category",
+                data: data.counts, // Array of counts corresponding to the categories
+                backgroundColor: backgroundColors, // Apply light colors
+                borderColor: borderColors, // Apply border colors
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              x: {
+                ticks: {
+                  color: "rgb(198, 118, 212)", // Color of x-axis labels
+                },
+                grid: {
+                  color: "rgba(169, 169, 169, 0.3)", // Dark gray grid lines
+                },
+              },
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  color: "rgb(198, 118, 212)", // Color of y-axis labels
+                },
+                grid: {
+                  color: "rgba(169, 169, 169, 0.3)", // Dark gray grid lines
+                },
+              },
+            },
+          },
+        });
+      }
+      // Fetch books by category data and create the chart
+      fetch('{{ url_for("get_books_by_category") }}')
+        .then((response) => response.json())
+        .then((data) => createBooksByCategoryChart(data))
+        .catch((error) =>
+          console.error("Error fetching books by category data:", error)
+        );
+
+      // Fetch sales data and create the chart
+      fetch('{{ url_for("get_sales_by_day") }}')
+        .then((response) => response.json())
+        .then((data) => createSalesByDayChart(data))
+        .catch((error) => console.error("Error fetching sales data:", error));
+
+      // Fetch users registered data and create the chart
+      fetch('{{ url_for("get_users_registered_by_day") }}')
+        .then((response) => response.json())
+        .then((data) => createUsersRegisteredByDayChart(data))
+        .catch((error) =>
+          console.error("Error fetching users registered data:", error)
+        );
+
+      // Fetch orders placed data and create the chart
+      fetch('{{ url_for("get_orders_placed_by_day") }}')
+        .then((response) => response.json())
+        .then((data) => createOrdersPlacedByDayChart(data))
+        .catch((error) =>
+          console.error("Error fetching orders placed data:", error)
+        );
+
+      function scrollToSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+        window.onscroll = function () {
+          scrollFunction();
+        };
+
+        function scrollFunction() {
+          if (
+            document.body.scrollTop > 500 ||
+            document.documentElement.scrollTop > 500
+          ) {
+            scrollToTopBtn.style.display = "block";
+          } else {
+            scrollToTopBtn.style.display = "none";
+          }
+        }
+
+        scrollToTopBtn.addEventListener("click", function () {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        // For initial load if already scrolled
+        scrollFunction();
+      });
+    </script>
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+    <button id="scrollToTopBtn">
+      <span class="solar--alt-arrow-up-outline"></span>
+    </button>
+  </body>
+</html>

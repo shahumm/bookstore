@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="static/css/cart.css" />
+    <link rel="stylesheet" href="static/css/icons.css" />
+    <link rel="stylesheet" href="static/css/login.css" />
+    <link rel="stylesheet" href="static/css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins"
+      rel="stylesheet"
+    />
+    <title>Login | Saeed Book Bank</title>
+  </head>
+  <body>
+    <button class="goBackButton" onclick="goBack()"><</button>
+
+    <div class="loginContainer">
+      <div class="credentials">
+        <h1>Login</h1>
+        <form action="/login" method="post">
+          <div class="inputGroup">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Email"
+              value="{{ request.form.email }}"
+              required
+            />
+          </div>
+          <div class="inputGroup">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Password"
+              value="{{ request.form.password }}"
+              required
+            />
+            <a href="/forgot-password" class="forgotPassword"
+              >Forgot Password?</a
+            >
+          </div>
+          {% if error %}
+          <div class="errorMessage">{{ error }}</div>
+          {% endif %}
+          <div class="buttonGroup">
+            <button id="loginButton" type="submit">Login</button>
+            <div class="divider"></div>
+          </div>
+        </form>
+        <div class="buttonGroup createAccount">
+          <button onclick="window.location.href='/register'">
+            Create an Account
+          </button>
+        </div>
+      </div>
+      <div class="imageContainer">
+        <img
+          src="https://res.cloudinary.com/dw095oyal/image/upload/v1715786947/saeedbookbank_is868p.jpg"
+          alt="library"
+        />
+      </div>
+    </div>
+
+    <script>
+      function goBack() {
+        window.history.back();
+      }
+    </script>
+  </body>
+</html>
